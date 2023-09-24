@@ -27,3 +27,11 @@ router.route("/add").post((req,res)=>{
 });
 
 //data read
+
+router.route("/").get((req,res)=>{
+    Inventory.find().then((user)=>{
+        res.json(user);
+    }).catch((error)=>{
+        console.log(error)
+    })
+});
