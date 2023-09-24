@@ -85,3 +85,7 @@ const patientSchema = new schema ({      //Defines the patient schema
   },
   
 });
+
+const Patient = mongoose.model("Patient", patientSchema);  //Creates a mongoose model
+
+module.exports = Patient;  //Export the model
