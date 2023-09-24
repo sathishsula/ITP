@@ -52,3 +52,27 @@ router.route("/update/:id").put(async(req,res)=>{
         res.status(500).send({status:"error updating data!", error:error.message});
     });
 });
+
+//data delete
+
+router.route("/delete/:id").delete(async(req,res)=>{
+    let userID = req.params.id;
+    
+    await OrderI.findByIdAndDelete(userID).then(()=>{
+        res.status(200).send({status:"Order delete"});
+    }).catch((error)=>{
+        console.log(error.message);
+        res.status(500).send({status:"error with delete Order!",error:error.message});
+    })
+})
+
+router.route("/get/:id").get(async(req,res)=>{
+    let userID = req.params.id;
+    const user = await OrderI.findById(userID).then(()=>{
+        res.status(200).send({status: "Inventory fetched", user})
+    }).catch((error)=>{
+        console.log(error.message);
+        res.status(500).send({status:"error with get Inventory!",error:error.message})
+    })
+})
+module.exports = router;
