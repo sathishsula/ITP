@@ -35,3 +35,19 @@ router.route("/").get((req,res)=>{
         console.log(error)
     })
 });
+
+//data update
+router.route("/update/:id").put(async(req,res)=>{
+    let userID = req.params.id;
+    const {item_id,item_name,category,quantity} = req.body;
+
+    const updateUser = {
+        item_id,item_name,category,quantity
+    }
+    const update = await Inventory.findByIdAndUpdate(userID,updateUser).then(()=>{
+        res.status(200).send({status:"Inventory update"});
+    }).catch((error)=>{
+        console.log(error);
+        res.status(500).send({status:"error updating data!", error:error.message});
+    });
+});
