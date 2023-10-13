@@ -35,6 +35,11 @@ const appointmentSchema = new schema ( {
         required: false 
     }, 
 
+    address : {
+        type: String ,
+        required : false
+    },
+
     contact : {
         type: Number ,
         required : false
