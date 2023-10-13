@@ -226,3 +226,62 @@ router.route("/get/:id").get(async (req, res) => {
       });
     });
 });
+
+// ...updating appointment details ...
+router.route("/update/:id").put(async (req, res) => {
+  let aid = req.params.id;
+
+  const notes = req.body.notes;
+  const name = req.body.name;
+  const address = req.body.address;
+
+  const age = req.body.age;
+  const gender = req.body.gender;
+  const contact = req.body.contact;
+
+  const updatedApt = {
+    notes,
+    name,
+    address,
+    age,
+    contact,
+    gender,
+  };
+
+  const update = await Appointment.findByIdAndUpdate(aid, updatedApt)
+    .then(() => {
+      res.status(200).send({ status: "Appointment updated" });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).send({
+        status: "Error with updating information",
+        error: err.message,
+      });
+    });
+});
+
+
+router.route("/markConsulted/:id").put(async (req, res) => {
+  let aid = req.params.id;
+
+  const consulted = true;
+
+  const updatedApt = {
+    consulted,
+  };
+
+  const update = await Appointment.findByIdAndUpdate(aid, updatedApt)
+    .then(() => {
+      res.status(200).send({ status: "Appointment updated" });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).send({
+        status: "Error with updating information",
+        error: err.message,
+      });
+    });
+});
+
+module.exports = router;
