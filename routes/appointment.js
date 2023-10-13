@@ -148,3 +148,81 @@ router.route("/makeapt").post(async (req, res) => {
       console.log(err);
     });
 });
+
+
+   // deleting appointments 
+router.route("/delete/:id").delete(async (req, res) => {
+  let aid = req.params.id;
+  let cid = "";
+
+  const apt = await Appointment.findById(aid)
+    .then((apt) => {
+      cid = apt.channel;
+    })
+    .catch((err) => {
+      console.log(err.message);
+      res.status(500).send({
+        status: "Error in getting appointment details",
+        error: err.message,
+      });
+    });
+
+  let patients = 0;
+
+  const chn = await Channel.findById(cid)
+    .then((channel) => {
+      patients = parseInt(channel.patients) - 1;
+    })
+    .catch((err) => {
+      console.log(err.message);
+      res.status(500).send({
+        status: "Error in getting appointment details",
+        error: err.message,
+      });
+    });
+
+  const updChannel = {
+    patients,
+  };
+
+  await Appointment.findByIdAndDelete(aid)
+    .then(() => {
+      const chn1 = Channel.findByIdAndUpdate(cid, updChannel)
+        .then((channel) => {
+          res.status(200).send({ status: "Appointment Deleted" });
+        })
+        .catch((err) => {
+          console.log(err.message);
+          res.status(500).send({
+            status: "Error in getting appointment details",
+            error: err.message,
+          });
+        });
+
+      // res.status(200).send({ status: "Appointment deleted" });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(202).send({
+        status: "Error with deleting the appointment",
+        error: err.message,
+      });
+    });
+});
+
+//getting one channel by searcch 
+router.route("/get/:id").get(async (req, res) => {
+  let aid = req.params.id;
+
+  const apt = await Appointment.findById(aid)
+    .then((apt) => {
+      res.status(200).send({ status: "Appointment fetched", apt });
+    })
+    .catch((err) => {
+      console.log(err.message);
+      res.status(500).send({
+        status: "Error in getting appointment details",
+        error: err.message,
+      });
+    });
+});
