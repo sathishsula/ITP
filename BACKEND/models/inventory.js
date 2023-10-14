@@ -45,7 +45,7 @@ const inventorySchema = new Schema({
         required: true
     },
     Image: {
-        data: String,
+        type: Buffer,
     }
 
 })

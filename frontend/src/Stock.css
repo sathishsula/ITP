@@ -1,0 +1,40 @@
+/* Style for the table container */
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  
+  }
+  
+  /* Style for the table */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Style for table header row */
+  thead th {
+    background-color: #f2f2f2;
+    text-align: left;
+    padding: 10px;
+  }
+  
+  /* Style for table data rows */
+  tbody td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  /* Style for odd rows */
+  tbody tr:nth-child(odd) {
+    background-color: #f9f9f9;
+  }
+  
+  /* Hover effect on table rows */
+  tbody tr:hover {
+    background-color: #e5e5e5;
+  }
+  

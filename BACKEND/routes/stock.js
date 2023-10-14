@@ -1,6 +1,8 @@
 const router =require("express").Router();
 let inventory=require("../models/inventory");
 
+
+
 //add
 
 http://localhost:8070/stock/add
@@ -26,7 +28,7 @@ router.route("/add").post((req,res)=>{
         ReferenceNo,
         Category,
         Type,
-        MfgDate: new Date(dateString),
+        MfgDate,
         ExpDate,
         Description,
         Quantity,
@@ -42,6 +44,7 @@ router.route("/add").post((req,res)=>{
 
 })
 
+
 //fetch
 http://localhost:8070/stock/
 router.route("/").get((req,res)=>{
@@ -54,72 +57,86 @@ router.route("/").get((req,res)=>{
 
 })
 
-//update
-http://localhost:8070/stock/update/6509d95e5f350c5fdfa76eb6
-router.route("/update/:id").put(async(req,res)=>{
-    let itemId = req.params.id;
-
-    const{
-        ProductName,
-        GenericName,
-        Dosage,
-        ReferenceNo,
-        Category,
-        Type,
-        MfgDate,
-        ExpDate,
-        Description,
-        Quantity,
-        Price,
-        Image
+// Update by ReferenceNo
+router.route("/update/:referenceNo").put(async (req, res) => {
+    const referenceNo = req.params.referenceNo;
+  
+    const {
+      ProductName,
+      GenericName,
+      Dosage,
+      Category,
+      Type,
+      MfgDate,
+      ExpDate,
+      Description,
+      Quantity,
+      Price,
+      Image,
     } = req.body;
-    
-    const updateItem= {
-        ProductName,
-        GenericName,
-        Dosage,
-        ReferenceNo,
-        Category,
-        Type,
-        MfgDate,
-        ExpDate,
-        Description,
-        Quantity,
-        Price,
-        Image
+  
+    const updateItem = {
+      ProductName,
+      GenericName,
+      Dosage,
+      Category,
+      Type,
+      MfgDate,
+      ExpDate,
+      Description,
+      Quantity,
+      Price,
+      Image,
+    };
+  
+    try {
+      const updatedItem = await inventory.findOneAndUpdate(
+        { ReferenceNo: referenceNo }, // Use ReferenceNo for matching
+        updateItem,
+        { new: true } // To return the updated document
+      );
+  
+      if (!updatedItem) {
+        return res.status(404).send({ status: "Item not found" });
+      }
+  
+      console.log("Item updated successfully:", updatedItem);
+      res.status(200).send({ status: "updated successfully", updatedItem });
+    } catch (error) {
+      console.error("Error updating item:", error);
+      res.status(500).send({ status: "update error" });
     }
-    const update = await inventory.findByIdAndUpdate(itemId, updateItem).then(()=>{
-        res.status(200).send({status: "updated successfully"})
-    }).catch ((error)=>{
-        console.log(error);
-        res.status(500).send({status:"update error"})
-    })
+  });
+  
 
-})
+// DELETE
+router.delete("/delete/:referenceNo", async (req, res) => {
+    const referenceNo = req.params.referenceNo;
+  
+    try {
+      // Find the item by referenceNo and delete it
+      await inventory.findOneAndDelete({ ReferenceNo: referenceNo });
+  
+      res.status(200).json({ message: "Item deleted successfully" });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Error deleting item" });
+    }
+  });
 
-//delete
-http://lacalhost:8070/stock/delete/6509d95e5f350c5fdfa76eb6
-router.route("/delete/:id").delete(async(req,res)=>{
-    let itemId = req.params.id;
-
-    await inventory.findByIdAndDelete(itemId).then(()=>{
-        res.status(200).send({ststus:"Deleted Successfully"})
-    }).catch((err)=>{
-    console.log(err.message);
-    res.status(500).send({status:"Error Delete"})
-    })
-})
 
 //get a one item details
-router.route("/getByName/:name").get(async(req,res)=>{
-    let productName=req.params.name;
-    await inventory.findOne({ProductName: productName}).then((stock)=>{
+router.route("/getByRef/:referenceNo").get(async(req,res)=>{
+    let ReferenceNo=req.params.referenceNo;
+    await inventory.findOne({ReferenceNo: ReferenceNo}).then((stock)=>{
         res.status(200).send({status:"Item fetched",stock})
     }).catch((err)=>{
         console.log(err.message);
         res.status(500).send({status:"Error with get Item"});
     })
 })
+
+
 
 //for a search bar
 router.route("/search").get(async (req, res) => {
